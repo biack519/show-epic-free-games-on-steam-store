@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         E宝的爱标识助手
 // @namespace    http://tampermonkey.net/
-// @version      2.2
-// @description  在 Steam 商店详情页、主页、搜索页、愿望单等醒目标识 Epic 已送过的游戏。
+// @version      2.5
+// @description  在 Steam 商店详情页、主页、搜索页、愿望单等醒目标识 Epic 已送过的游戏。已修复非主游戏页面误触发悬浮窗的 Bug。
 // @author       biackezio
 // @match        https://store.steampowered.com/*
 // @match        https://keylol.com/t596303-1-1
@@ -41,6 +41,7 @@
         }
         return;
     }
+
     // 创建左下角悬浮窗
     function createFloatingNotice() {
         if (document.getElementById('epic-float-notice')) return;
@@ -54,12 +55,12 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
             border: 2px solid white; animation: slideIn 0.5s ease-out;
         `;
-        // 添加简单的滑入动画
         const style = document.createElement('style');
         style.innerHTML = `@keyframes slideIn { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }`;
         document.head.appendChild(style);
         document.body.appendChild(notice);
     }
+
     // --- Steam 页面逻辑 ---
     const freebieSet = new Set(GM_getValue(STORAGE_KEY, []));
     if (freebieSet.size === 0) return;
@@ -91,21 +92,20 @@
         `;
         return badge;
     };
+
     // 处理不同页面的核心函数
     function processSteamPages() {
-        // 判断当前是否在商店详情页
         const isAppPage = currentUrl.includes('/app/');
         const pageAppId = isAppPage ? currentUrl.match(/\/app\/(\d+)/)?.[1] : null;
 
-        // 1. 商店详情页主标题 (#appHubAppName)
-        if (isAppPage) {
+        // 1. 商店详情页主标题与浮窗逻辑
+        // 只有当 URL 中的主 ID 匹配名单时，才触发浮窗和主标题标签
+        if (isAppPage && pageAppId && freebieSet.has(pageAppId)) {
             const storeTitle = document.querySelector('#appHubAppName:not(.epic-checked)');
             if (storeTitle) {
                 storeTitle.classList.add('epic-checked');
                 createFloatingNotice();
-                if (freebieSet.has(pageAppId)) {
-                    storeTitle.appendChild(createBadge('14px', '0 15px'));
-                }
+                storeTitle.appendChild(createBadge('14px', '0 15px'));
             }
         }
 
@@ -114,17 +114,17 @@
         gameNodes.forEach(node => {
             const appId = node.getAttribute('data-ds-appid');
 
-            // --- 关键优化：如果是详情页，跳过标记与主游戏 ID 相同的其他元素 (如侧边栏、列表项) ---
+            // 如果是详情页，防止在主标题以外的地方给“当前主游戏”重复打标
             if (isAppPage && appId === pageAppId) {
-                node.classList.add('epic-checked'); // 标记为已处理但不加标签
+                node.classList.add('epic-checked');
                 return;
             }
 
             if (freebieSet.has(appId)) {
                 node.classList.add('epic-checked');
-                // 搜索页、列表页查找插入点
                 let titleArea = node.querySelector('.title, .search_name, .title_capsule');
-                if (!titleArea) titleArea = node; // 兜底
+                if (!titleArea) titleArea = node; 
+                
                 if (window.getComputedStyle(node).position === 'static') {
                     node.style.position = 'relative';
                 }
@@ -147,10 +147,8 @@
         });
     }
 
-    // 初始执行一次
     processSteamPages();
 
-    // 使用 MutationObserver 监听动态内容
     const observer = new MutationObserver(() => {
         processSteamPages();
     });
