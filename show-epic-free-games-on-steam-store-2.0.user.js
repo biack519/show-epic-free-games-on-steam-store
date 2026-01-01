@@ -10,6 +10,7 @@
 // @grant        GM_getValue
 // @grant        GM_registerMenuCommand
 // @grant        GM_openInTab
+// @license      MIT
 // ==/UserScript==
 
 (function() {
