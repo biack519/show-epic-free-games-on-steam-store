@@ -1,6 +1,6 @@
-# 🎮 Steam Epic 标识助手 (Steam Epic Identity Helper)
+# 🎮 在 Steam 显示 E 宝送过的游戏  (Show Epic Free Games On Steam Store)
 
-**Steam Epic 标识助手** 是一款基于 Tampermonkey（油猴）编写的轻量级增强脚本。它能帮助你在浏览 Steam 商店时，一眼识别出哪些游戏曾在 **Epic Games Store** 开启过限时免费领取。
+**Show Epic Free Games On Steam Store** 是一款基于 Tampermonkey（油猴）编写的轻量级增强脚本。它能帮助你在浏览 Steam 商店时，一眼识别出哪些游戏曾在 **Epic Games Store** 开启过限时免费领取。
 
 避免“背刺”，从看到那个**粉色标签**开始！
 
