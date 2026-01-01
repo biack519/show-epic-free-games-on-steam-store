@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         show-epic-free-games-on-steam-store
+// @name         E宝的爱标识助手
 // @namespace    http://tampermonkey.net/
 // @version      2.1
 // @description  在 Steam 商店详情页、主页、搜索页、愿望单等醒目标识 Epic 已送过的游戏。已修复详情页多余标记问题。
