@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         E宝的爱标识助手
 // @namespace    http://tampermonkey.net/
-// @version      2.1
+// @version      2.2
 // @description  在 Steam 商店详情页、主页、搜索页、愿望单等醒目标识 Epic 已送过的游戏。
 // @author       biackezio
 // @match        https://store.steampowered.com/*
